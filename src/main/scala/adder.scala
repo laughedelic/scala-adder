@@ -3,10 +3,10 @@ package laughedelic.so
 object adder {
 
   // any nested type would work:
-  type Nat = Option[_]
+  sealed trait Nat
 
-  type Zero = None.type
-  type Succ[N <: Nat] = Some[N]
+  trait Zero extends Nat
+  trait Succ[N <: Nat] extends Nat
 
   // enough for examples:
   type _0 = Zero
@@ -60,7 +60,7 @@ object adder {
 
 
   // we need one more type arg NOut, but then we need a way to derive N (using NatVal)
-  def adder[N <: Nat, NOut](n: NatVal[N])(
+  def adder[N <: Nat, NOut](n: NatVal[N])(initial: Int)(
     implicit adderFunction: AdderType[N] { type Out = NOut }
-  ): Int => NOut = init => adderFunction(init)
+  ): NOut = adderFunction(initial)
 }
